@@ -1,0 +1,266 @@
+{
+    "openapi" : "3.0.3",
+    "info": {
+        "title": "Learn Go API",
+        "description": "Learn how to write api spec",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8001"
+        }
+    ],
+    "paths": {
+        "/products" : {
+            "get": {
+                "security": [{ "ProductAuth": [] }],
+                "tags": ["Product API"],
+                "description": "List all available products",
+                "summary": "List all available products",
+                "responses": {
+                    "200" : {
+                        "description": "Success get all products",
+                        "content": {
+                            "application/json": {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data" : {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Product"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [{ "ProductAuth": [] }],
+                "tags": ["Product API"],
+                "description": "Create a new product",
+                "summary": "Create a new product",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOrUpdateProductRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success Create Product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessProductResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BadRequestResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{productId}": {
+            "get": {
+                "security": [{ "ProductAuth": [] }],
+                "tags": ["Product API"],
+                "description": "Get the detail of selected product",
+                "summary": "Get the detail of selected product",
+                "responses": {
+                    "200": {
+                        "description": "Success getting product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessProductResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Could not find the product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [{ "ProductAuth": [] }],
+                "tags": ["Product API"],
+                "description": "Update selected product",
+                "summary": "Update selected product",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOrUpdateProductRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success updating product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessProductResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [{ "ProductAuth": [] }],
+                "tags": ["Product API"],
+                "description": "Delete selected product",
+                "summary": "Delete selected product",
+                "responses": {
+                    "200": {
+                        "description": "Success deleting product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type" : "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully deleted the product"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "ProductAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "Authorization",
+                "description": "Authentication for the api"
+            }
+        },
+        "schemas": {
+            "CreateOrUpdateProductRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Cable"
+                    },
+                    "sku": {
+                        "type": "string",
+                        "example": "DPS0123"
+                    }
+                }
+            },
+            "SuccessProductResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Successfully fetched/created/updated the product"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/Product"
+                    }
+                }
+            },
+            "Product": {
+                "type" : "object",
+                "properties" : {
+                    "id": {
+                        "type": "number",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Disc"
+                    },
+                    "sku": {
+                        "type": "string",
+                        "example": "SDA0123"
+                    }
+                }
+            },
+            "BadRequestResponse": {
+                "type":  "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "The value of name is invalid"
+                    }
+                }
+            },
+            "NotFoundResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Could not find the product"
+                    }
+                }
+            }
+        }
+    }
+}
